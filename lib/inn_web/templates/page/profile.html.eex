@@ -1,0 +1,26 @@
+<h1 class="center">Сработало!</h1>
+<h3 class="center"><%= "Ваша почта #{@conn.assigns.user.email}" %> </h3>
+<h5 class="center">теперь просто введите номер ИНН</h5>
+<%= form_for @changeset, Routes.page_path(@conn, :create), fn f -> %>
+  <div class="form-group">
+    <%= text_input f, :number, placeholder: "Номер ИНН", class: "form-control" %>
+    <%= error_tag f, :number %>
+  </div>
+  <%= submit "Проверить", class: "btn btn-primary" %>
+<% end %>
+
+<h5 class="center">номера которые вы уже проверяли</h5>
+  <ul class="collection">
+    <%= for number <- Inn.Repo.all(Inn.Number) do %>
+    <%= cond do %>
+      <%= @conn.assigns.user.id == number.user_id -> %>
+    <li class="collection-item">
+        <%= number.number %>
+      <div class="right">
+        <%= "#{number.status} | "%> <%= number.inserted_at %>
+      </div>
+    </li>
+    <%= true -> %>
+    <% end %>
+    <% end %>
+  </ul>
