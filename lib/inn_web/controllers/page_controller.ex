@@ -19,24 +19,64 @@ defmodule InnWeb.PageController do
   end
 
   def create(conn, %{"number" => number}) do
-    %{"number" => new} = number
-IO.puts("+++++")
-new2 = to_string(new)
-    IO.inspect(is_binary(new2))
+    %{"number" => string} = number
+      validate_length(conn, string)
+      get_status(string)
+      final(conn, number)
+
+    end
+
+    def validate_length(conn, string) do
+      if String.length(string) == 0 do
+        conn
+        |> put_flash(:error, "Введите номер ИНН")
+        |> redirect(to: Routes.page_path(conn, :profile))
+      else
+        case String.length(string) do
+          exp when exp < 10 ->
+            conn
+            |> put_flash(:error, "Очень мало символов")
+            |> redirect(to: Routes.page_path(conn, :profile))
+          exp when exp == 11 ->
+            conn
+            |> put_flash(:error, "Неверный номер")
+            |> redirect(to: Routes.page_path(conn, :profile))
+          exp when exp > 12 ->
+            conn
+            |> put_flash(:error, "Очень много символов")
+            |> redirect(to: Routes.page_path(conn, :profile))
+          exp when exp == 10 ->
+            :ok
+          exp when exp == 12 ->
+            :ok
+        end
+      end
+    end
+
+    def final(conn, params) do
       changeset = conn.assigns.user
       |> Ecto.build_assoc(:inns)
-      |> Inn.Number.changeset(number)
+      |> Inn.Number.changeset(params)
 
       case Inn.Repo.insert(changeset) do
         {:ok, _number} ->
           conn
-          |> put_flash(:info, "Новый номер")
+          |> put_flash(:info, "Вы ввели номер")
           |> redirect(to: Routes.page_path(conn, :profile))
         {:error, _changeset} ->
           conn
-          |> put_flash(:error, "Введите номер")
+          |> put_flash(:error, " Пожалуйста введите номер")
           |> redirect(to: Routes.page_path(conn, :profile))
       end
+    end
 
-  end
+    def validate_data(conn, string) do
+
+      end
+    end
+
+    def get_status(string) do
+      IO.puts("+++++")
+      IO.inspect(string)
+    end
 end
