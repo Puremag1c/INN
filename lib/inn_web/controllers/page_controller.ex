@@ -6,25 +6,13 @@ defmodule InnWeb.PageController do
     render conn, "index.html", changeset: changeset
   end
 
-  def profile(conn, params) do
-      if conn.assigns.user == nil do
-        conn
-        |> put_flash(:error, "Нельзя")
-        |> redirect(to: Routes.page_path(conn, :index))
-      else
-        changeset = Inn.Number.changeset(%Inn.Number{}, %{})
-
-        render conn, "profile.html", changeset: changeset
-      end
-  end
-
   def create(conn, %{"number" => number}) do
     %{"number" => string} = number
-      validate_length(conn, string)
+    if validator(conn, string) == :ok do
       get_status(string)
       final(conn, number)
-
     end
+  end
 
     def validate_length(conn, string) do
       if String.length(string) == 0 do
@@ -71,7 +59,22 @@ defmodule InnWeb.PageController do
     end
 
     def validate_data(conn, string) do
+      list = String.codepoints(string)
+      for char <- list do
+        if String.contains?(char, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]) == true do
+          :ok
+        else
+          conn
+          |> put_flash(:error, "Вы ввели какую-то дичь, введите номер")
+          |> redirect(to: Routes.page_path(conn, :index))
+        end
+      end
+    end
 
+    def validator(conn, string) do
+      if validate_length(conn, string) == :ok do
+        validate_data(conn, string)
+      end
     end
 
     def get_status(string) do
