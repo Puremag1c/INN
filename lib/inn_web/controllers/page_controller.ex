@@ -2,8 +2,8 @@ defmodule InnWeb.PageController do
   use InnWeb, :controller
 
   def index(conn, _params) do
-
-    render conn, "index.html"
+    changeset = Inn.Number.changeset(%Inn.Number{}, %{})
+    render conn, "index.html", changeset: changeset
   end
 
   def profile(conn, params) do
@@ -30,21 +30,21 @@ defmodule InnWeb.PageController do
       if String.length(string) == 0 do
         conn
         |> put_flash(:error, "Введите номер ИНН")
-        |> redirect(to: Routes.page_path(conn, :profile))
+        |> redirect(to: Routes.page_path(conn, :index))
       else
         case String.length(string) do
           exp when exp < 10 ->
             conn
             |> put_flash(:error, "Очень мало символов")
-            |> redirect(to: Routes.page_path(conn, :profile))
+            |> redirect(to: Routes.page_path(conn, :index))
           exp when exp == 11 ->
             conn
             |> put_flash(:error, "Неверный номер")
-            |> redirect(to: Routes.page_path(conn, :profile))
+            |> redirect(to: Routes.page_path(conn, :index))
           exp when exp > 12 ->
             conn
             |> put_flash(:error, "Очень много символов")
-            |> redirect(to: Routes.page_path(conn, :profile))
+            |> redirect(to: Routes.page_path(conn, :index))
           exp when exp == 10 ->
             :ok
           exp when exp == 12 ->
@@ -62,11 +62,11 @@ defmodule InnWeb.PageController do
         {:ok, _number} ->
           conn
           |> put_flash(:info, "Вы ввели номер")
-          |> redirect(to: Routes.page_path(conn, :profile))
+          |> redirect(to: Routes.page_path(conn, :index))
         {:error, _changeset} ->
           conn
           |> put_flash(:error, " Пожалуйста введите номер")
-          |> redirect(to: Routes.page_path(conn, :profile))
+          |> redirect(to: Routes.page_path(conn, :index))
       end
     end
 

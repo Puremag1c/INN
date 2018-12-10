@@ -15,19 +15,19 @@
       <nav class="green">
         <div class="nav-wrapper container">
           <a href="/" class="brand-logo">
-            Проверка контрольной суммы номера ИНН
+            Чекер ИНН
           </a>
-          <ul class="right">
+          <div class="right">
             <%= if @conn.assigns[:user] do %>
-              <li>
+
                 <%= link "Выйти", to: Routes.auth_path(@conn, :signout) %>
-              </li>
+
             <% else %>
-            <li>
+
               <%= link "Авторизация", to: Routes.auth_path(@conn, :request, "github") %>
-            </li>
+
             <% end %>
-          </ul>
+          </div>
           </div>
       </nav>
     </header>

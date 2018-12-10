@@ -31,7 +31,7 @@ defmodule InnWeb.AuthController do
           conn
           |> put_flash(:info, "Привет")
           |> put_session(:user_id, user.id)
-          |> redirect(to: Routes.page_path(conn, :profile))
+          |> redirect(to: Routes.page_path(conn, :index))
         {:error, _reason} ->
           conn
           |> put_flash(:error, "Что-то пошло не так")

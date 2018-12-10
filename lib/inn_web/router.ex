@@ -18,15 +18,10 @@ defmodule InnWeb.Router do
   scope "/", InnWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/profile", PageController, :profile
-  end
-  scope "/profile", InnWeb do
-    pipe_through :browser
-
     resources "/", PageController
-    
+
   end
+
   scope "/auth", InnWeb do
     pipe_through :browser
 
