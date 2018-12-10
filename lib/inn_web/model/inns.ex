@@ -3,7 +3,7 @@ defmodule Inn.Number do
 
 
   schema "inns" do
-    field :number, :integer
+    field :number, :string
     field :status, :string
     belongs_to :user, Inn.User
 
