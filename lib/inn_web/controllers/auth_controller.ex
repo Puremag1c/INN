@@ -34,7 +34,7 @@ defmodule InnWeb.AuthController do
           |> redirect(to: Routes.page_path(conn, :profile))
         {:error, _reason} ->
           conn
-          |> put_flash(:error, "invalid sign in")
+          |> put_flash(:error, "Что-то пошло не так")
           |> redirect(to: Routes.page_path(conn, :index))
       end
     end
