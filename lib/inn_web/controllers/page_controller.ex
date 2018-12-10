@@ -72,7 +72,6 @@ defmodule InnWeb.PageController do
 
     def validate_data(conn, string) do
 
-      end
     end
 
     def get_status(string) do
