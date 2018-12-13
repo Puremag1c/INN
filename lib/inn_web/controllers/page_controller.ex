@@ -3,12 +3,14 @@ defmodule InnWeb.PageController do
 
   import Plug.Conn
   import Phoenix.Controller
+  import Ecto.Query
 
   plug :validator when action in [:create]
 
   def index(conn, _params) do
     changeset = Inn.Number.changeset(%Inn.Number{}, %{})
-    render conn, "index.html", changeset: changeset
+    query = from q in Inn.Number, order_by: [desc: q.inserted_at]
+    render conn, "index.html", changeset: changeset, query: query
   end
 
   def create(conn, %{"number" => number}) do
@@ -85,8 +87,6 @@ defmodule InnWeb.PageController do
 # Плаг осуществляющий полную проверку данных формы
     def validator(conn, _params) do
       %{params: %{"number" => %{"number" => string}}} = conn
-      IO.puts("++++")
-      IO.inspect(string)
       conn
       |> validate_length(string)
       |> validate_data(string)

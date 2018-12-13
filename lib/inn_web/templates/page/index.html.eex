@@ -17,7 +17,7 @@
 
 <h5 class="center">номера которые вы уже проверяли</h5>
   <ul class="collection">
-    <%= for number <- Inn.Repo.all(Inn.Number) do %>
+    <%= for number <- Inn.Repo.all(@query) do %>
     <%= cond do %>
       <%= @conn.assigns.user.id == number.user_id -> %>
     <li class="collection-item">
