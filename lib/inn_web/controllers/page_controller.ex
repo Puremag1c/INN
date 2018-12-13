@@ -94,13 +94,41 @@ defmodule InnWeb.PageController do
 
     end
 
-# Проверяет контрольную сумму номера ИНН
+# Проверяет контрольные сумму номера ИНН
     def get_status(conn, string) do
+      list = String.codepoints(string)
+      love = for el <- list do
+        String.to_integer(el)
+      end
       case conn.assigns.length do
         10 ->
-      assign(conn, :status, %{"status" => "Корректен"})
+          sum = Enum.at(love,0)*2 + Enum.at(love,1)*4 + Enum.at(love,2)*10 + Enum.at(love,3)*3 + Enum.at(love,4)*5 + Enum.at(love,5)*9 + Enum.at(love,6)*4 + Enum.at(love,7)*6 + Enum.at(love,8)*8
+          wow = div(sum, 11)
+          pr = sum - wow * 11
+          fin = if pr == 10 do 0 else pr end
+            if fin == Enum.at(love,9) do
+              assign(conn, :status, %{"status" => "Корректен"})
+            else
+              assign(conn, :status, %{"status" => "Не корректен"})
+            end
         12 ->
-      assign(conn, :status, %{"status" => "Не корректен"})
+          sum1 = Enum.at(love,0)*7 + Enum.at(love,1)*2 + Enum.at(love,2)*4 + Enum.at(love,3)*10 + Enum.at(love,4)*3 + Enum.at(love,5)*5 + Enum.at(love,6)*9 + Enum.at(love,7)*4 + Enum.at(love,8)*6 + Enum.at(love,9)*8
+          sum2 = Enum.at(love,0)*3 + Enum.at(love,1)*7 + Enum.at(love,2)*2 + Enum.at(love,3)*4 + Enum.at(love,4)*10 + Enum.at(love,5)*3 + Enum.at(love,6)*5 + Enum.at(love,7)*9 + Enum.at(love,8)*4 + Enum.at(love,9)*6 + Enum.at(love,10)*8
+          wow1 = div(sum1, 11)
+          wow2 = div(sum2, 11)
+          pr1 = sum1 - wow1 * 11
+          pr2 = sum2 - wow2 * 11
+          fin1 = if pr1 == 10 do 0 else pr1 end
+          fin2 = if pr2 == 10 do 0 else pr2 end
+          if fin1 == Enum.at(love,10) do
+            if fin2 == Enum.at(love,11) do
+                assign(conn, :status, %{"status" => "Корректен"})
+              else
+                assign(conn, :status, %{"status" => "Не корректен"})
+            end
+          else
+            assign(conn, :status, %{"status" => "Не корректен"})
+          end
       end
     end
 end
