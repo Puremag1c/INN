@@ -3,7 +3,7 @@ defmodule Inn.Repo.Migrations.AddInn do
 
   def change do
     create table(:inns) do
-      add :number, :integer
+      add :number, :string
       add :status, :string
       add :user_id, references(:users)
 
